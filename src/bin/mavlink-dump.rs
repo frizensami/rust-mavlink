@@ -13,7 +13,7 @@ fn main() {
     }
 
     let vehicle = Arc::new(mavlink::connect(&args[1]).unwrap());
-    
+
     vehicle.send(&mavlink::request_parameters()).unwrap();
     vehicle.send(&mavlink::request_stream()).unwrap();
 
@@ -28,10 +28,9 @@ fn main() {
     });
 
     loop {
-        if let Ok(msg) = vehicle.recv() {
-            println!("{:?}", msg);
-        } else {
-            break;
+        match vehicle.recv() {
+            Ok(msg) => println!("{:?}", msg),
+            Err(err) => { println!("{:?}", err); break; }
         }
     }
 }
